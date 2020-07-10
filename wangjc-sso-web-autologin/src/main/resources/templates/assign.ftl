@@ -1,0 +1,1 @@
+<#assign StaticServer="/wangjc-sso-autologin">
