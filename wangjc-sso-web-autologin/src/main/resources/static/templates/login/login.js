@@ -5,6 +5,14 @@ layui.use(["form","layer"],function(){
     form = layui.form;
     layer = layui.layer;
 
+    /** 加载验证码 */
+    loadCode()
+
+    /** 点击切换 */
+    $("#authCode").click(function(){
+        loadCode()
+    })
+
     form.render();//渲染表单
 
     /** 验证条件 */
@@ -16,9 +24,14 @@ layui.use(["form","layer"],function(){
         },
         password:function(value){
             if(BaseUtil.isEmpty(value)){
-                return "验证密码不可为空";
+                return "密码不可为空";
             }
-        }
+        },
+        code:function(value){
+            if(BaseUtil.isEmpty(value)){
+                return "验证码不可为空";
+            }
+        },
     });
 
     /**监听submit提交*/
@@ -37,3 +50,10 @@ layui.use(["form","layer"],function(){
         return false;
     });
 });
+/*****************************加载验证码****************************/
+function loadCode(){
+    Request.async("/wangjc-sso-autologin/autoLogin/getCode").then(res=>{
+        $("#authCode").attr("src",res.image);
+        $("input[name='key']").val(res.key);
+    })
+}

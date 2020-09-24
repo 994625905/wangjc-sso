@@ -11,6 +11,10 @@
                 <input class="bt_input" name="userName" lay-verify="username" />
                 <span>密码:</span>
                 <input class="bt_input" type="password" name="password" lay-verify="password" />
+                <span>验证码:</span>
+                <img id="authCode" style="width: 111px;height: 36px">
+                <input class="bt_input" name="code" lay-verify="code" style="width: 50px;"/>
+                <input name="key" type="hidden" value="" />
                 <button lay-submit lay-filter="submit" class="logingBut">登录</button>
             </form>
         </div>

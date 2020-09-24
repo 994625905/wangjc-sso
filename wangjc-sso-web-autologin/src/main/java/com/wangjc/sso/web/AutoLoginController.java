@@ -1,10 +1,12 @@
 package com.wangjc.sso.web;
 
+import com.wangjc.sso.core.constant.SystemConstant;
 import com.wangjc.sso.core.entity.TUser;
 import com.wangjc.sso.core.help.AutoLoginHelp;
 import com.wangjc.sso.core.result.ActionResult;
 import com.wangjc.sso.core.result.ResultEnum;
 import com.wangjc.sso.core.service.RedisService;
+import com.wf.captcha.ArithmeticCaptcha;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * 单点登录的控制层
@@ -66,9 +71,15 @@ public class AutoLoginController{
      */
     @RequestMapping(value = "/login",method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
-    public ActionResult<String> login(String userName,String password, HttpServletRequest request, HttpServletResponse response){
+    public ActionResult<String> login(String userName,String password,String code,String key, HttpServletRequest request, HttpServletResponse response){
 
-        // 验证登录是否通过
+        // 验证码是否通过
+        String result = (String) redisService.hget(SystemConstant.REDIS_KEY.AUTH_CODE,key);
+        if(!code.equals(result)){
+            return ActionResult.error(ResultEnum.CODE_FAIL.getMsgCn());
+        }
+
+        // 验证用户信息是否通过
         TUser user = new TUser();
 
         if(user.getUserName().equals(userName) && user.getPassword().equals(password)) {
@@ -83,6 +94,28 @@ public class AutoLoginController{
             return ActionResult.ok(redirectUrl);
         }
         return ActionResult.error(ResultEnum.LOGIN_FAIL.getMsgCn());
+    }
+
+    /**
+     * 获取验证码
+     * @return
+     */
+    @RequestMapping(value = "/getCode",method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public ActionResult<Map<String,Object>> getCode(){
+        ArithmeticCaptcha captcha = new ArithmeticCaptcha(111,36);//设置宽高
+        captcha.setLen(2);//两位数运算
+        String result = captcha.text();//运算结果
+        String redisKey = UUID.randomUUID().toString();
+
+        //保存60秒
+        redisService.hset(SystemConstant.REDIS_KEY.AUTH_CODE,redisKey,result,60);
+
+        Map<String,Object> map = new HashMap<String, Object>(){{
+            put("image",captcha.toBase64());
+            put("key",redisKey);
+        }};
+        return ActionResult.ok(map);
     }
 
     /**

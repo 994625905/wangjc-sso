@@ -13,6 +13,7 @@ public class SystemConstant {
 
     public interface REDIS_KEY{
         String LOGIN = "wangjc-sso";
+        String AUTH_CODE = "wangjc-sso";
     }
 
     public interface REDIS_TIME{

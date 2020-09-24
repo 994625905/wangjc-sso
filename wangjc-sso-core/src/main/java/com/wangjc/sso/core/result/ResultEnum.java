@@ -14,6 +14,7 @@ public enum ResultEnum {
     ERROR(400,"Bad Request","请求错误"),
     UNAUTHORIZED(401,"Unauthorized","请先登录"),
     LOGIN_FAIL(410,"login fail","登录错误"),
+    CODE_FAIL(411,"code fail","验证码错误"),
     ERROR_PARAMETER(455,"Params Error","参数错误"),
 
     EXCEPTION(500,"exception","系统内部异常");

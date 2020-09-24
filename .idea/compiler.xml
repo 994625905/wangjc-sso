@@ -7,9 +7,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="wangjc-sso-web-test02" />
         <module name="wangjc-sso-web-autologin" />
         <module name="wangjc-sso-web-test" />
-        <module name="wangjc-sso-web-test02" />
         <module name="wangjc-sso-core" />
       </profile>
     </annotationProcessing>
